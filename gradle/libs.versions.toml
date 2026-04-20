@@ -41,6 +41,7 @@ datastore = "1.1.7"
 firebase-bom = "34.0.0"
 adaptive = "1.2.0-alpha04"
 compose-jetbrains = "1.8.2"
+material-icons = "1.7.3"
 jetbrains-savedstate = "1.3.1"
 coil = "3.3.0"
 coil-network = "3.3.0"
@@ -147,6 +148,12 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-jetbrains" }
+jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-jetbrains" }
+jetbrains-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "material-icons" }
+jetbrains-compose-material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material-icons" }
+jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-jetbrains" }
+jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-jetbrains" }
+
 jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "compose-lifecycle" }
 jetbrains-lifecycle-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
 jetbrains-lifecycle-viewmodel-savedstate = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "compose-lifecycle" }
@@ -160,6 +167,8 @@ convention-android-application = { id = "com.freddie.convention.android.applicat
 convention-android-application-compose = { id = "com.freddie.convention.android.application.compose", version = "unspecified"}
 convention-cmp-application = { id = "com.freddie.convention.cmp.application", version = "unspecified"}
 convention-kmp-library = { id = "com.freddie.convention.kmp.library", version = "unspecified"}
+convention-cmp-library = { id = "com.freddie.convention.cmp.library", version = "unspecified"}
+convention-cmp-feature = { id = "com.freddie.convention.cmp.feature", version = "unspecified"}
 
 # Android
 android-application = { id = "com.android.application", version.ref = "agp" }
