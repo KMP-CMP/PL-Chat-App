@@ -11,6 +11,7 @@ dependencies {
     compileOnly(libs.android.tools.common)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
+    compileOnly(libs.ksp.gradlePlugin)
 }
 
 java {
@@ -46,6 +47,11 @@ gradlePlugin {
         register("CmpApplication") {
             id = "com.freddie.convention.cmp.application"
             implementationClass = "CmpApplicationConventionPlugin"
+        }
+
+        register("kmpLibrary") {
+            id = "com.freddie.convention.kmp.library"
+            implementationClass = "KmpLibraryConventionPlugin"
         }
     }
 }
