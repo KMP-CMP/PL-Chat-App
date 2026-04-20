@@ -172,6 +172,7 @@ convention-kmp-library = { id = "com.freddie.convention.kmp.library", version = 
 convention-cmp-library = { id = "com.freddie.convention.cmp.library", version = "unspecified"}
 convention-cmp-feature = { id = "com.freddie.convention.cmp.feature", version = "unspecified"}
 convention-buildkonfig = { id = "com.freddie.convention.buildkonfig", version = "unspecified"}
+convention-room = { id = "com.freddie.convention.room", version = "unspecified"}
 
 # Android
 android-application = { id = "com.android.application", version.ref = "agp" }
