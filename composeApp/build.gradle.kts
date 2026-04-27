@@ -7,6 +7,13 @@ plugins {
 }
 
 kotlin {
+    androidLibrary {
+        compileSdk = 36
+        minSdk = 26
+        namespace = "com.freddie.chirp.composeapp"
+        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
+    }
+
     jvm()
 
     sourceSets {
