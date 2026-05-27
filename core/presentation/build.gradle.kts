@@ -15,6 +15,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.core.domain)
+                implementation(libs.jetbrains.compose.components.resources)
             }
         }
 
