@@ -16,6 +16,7 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.core.domain)
                 implementation(libs.jetbrains.compose.components.resources)
+                implementation(libs.jetbrains.lifecycle.compose)
             }
         }
 
