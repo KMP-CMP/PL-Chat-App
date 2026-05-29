@@ -19,7 +19,6 @@ class CmpLibraryConventionPlugin : Plugin<Project> {
                 "commonMainImplementation"(libs.findLibrary("jetbrains-compose-material-icons-core").get())
                 "commonMainImplementation"(libs.findLibrary("jetbrains-compose-ui").get())
                 "commonMainImplementation"(libs.findLibrary("jetbrains-compose-foundation").get())
-                "commonMainImplementation"(libs.findLibrary("jetbrains-compose-foundation").get())
             }
         }
     }
