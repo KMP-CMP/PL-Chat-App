@@ -1,6 +1,6 @@
 package com.freddie.core.domain.util
 
-sealed interface DataError {
+sealed interface DataError : Error {
     enum class Remote : DataError {
         BAD_REQUEST,
         REQUEST_TIMEOUT,
