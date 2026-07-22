@@ -38,7 +38,7 @@ suspend inline fun <reified Request, reified Response: Any> HttpClient.post(
     }
 }
 
-suspend inline fun <reified Request, reified Response: Any> HttpClient.get(
+suspend inline fun <reified Response: Any> HttpClient.get(
     route: String,
     queryParams: Map<String, Any> = mapOf(),
     crossinline builder: HttpRequestBuilder.() -> Unit = {}
@@ -54,7 +54,7 @@ suspend inline fun <reified Request, reified Response: Any> HttpClient.get(
     }
 }
 
-suspend inline fun <reified Request, reified Response: Any> HttpClient.delete(
+suspend inline fun <reified Response: Any> HttpClient.delete(
     route: String,
     queryParams: Map<String, Any> = mapOf(),
     crossinline builder: HttpRequestBuilder.() -> Unit = {}
@@ -73,6 +73,7 @@ suspend inline fun <reified Request, reified Response: Any> HttpClient.delete(
 suspend inline fun <reified Request, reified Response: Any> HttpClient.put(
     route: String,
     queryParams: Map<String, Any> = mapOf(),
+    body: Request,
     crossinline builder: HttpRequestBuilder.() -> Unit = {}
 ): Result<Response, DataError.Remote> {
     return safeCall {
@@ -81,6 +82,9 @@ suspend inline fun <reified Request, reified Response: Any> HttpClient.put(
             queryParams.forEach { (key, value) ->
                 parameter(key, value)
             }
+            // ContentNegotiation은 JSON Content-Type을 기준으로 Request 객체를 요청 본문으로 직렬화합니다.
+            // https://ktor.io/docs/client-serialization.html
+            setBody(body)
             builder()
         }
     }
