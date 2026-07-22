@@ -16,6 +16,10 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.core.domain)
                 implementation(libs.jetbrains.compose.components.resources)
+                // Adaptive API를 commonMain에서 사용해 플랫폼별 창 크기 판별 로직이 중복되지 않도록 합니다.
+                // Android와 iOS가 같은 breakpoint를 공유하므로 반응형 UI 분기를 일관되게 유지할 수 있습니다.
+                // https://kotlinlang.org/docs/multiplatform/compose-adaptive-layouts.html
+                implementation(libs.material3.adaptive)
                 implementation(libs.jetbrains.lifecycle.compose)
             }
         }
