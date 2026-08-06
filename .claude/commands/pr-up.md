@@ -19,8 +19,10 @@ allowed-tools: Bash(git:*), Bash(gh:*)
 1. **커밋 계정**: `git config user.name` / `git config user.email`(effective 값)이 개인 계정(`윤찬` / `vsvx13@naver.com`)인지 확인한다.
    - 아니면 repo-local로만 설정한다: `git config user.name "윤찬"` / `git config user.email "vsvx13@naver.com"`
    - **`--global` 변경 금지** — 회사 레포 설정을 건드리지 않는다.
-2. **gh 인증**: `gh auth status --hostname github.com`이 성공하고 활성 계정이 개인 계정인지 확인한다.
-   - 로그인이 안 되어 있으면 사용자에게 `! gh auth login --hostname github.com` 실행을 안내하고 중단한다. (회사 계정 `github.kakaocorp.com` 로그인과는 별개다)
+2. **gh 인증**: `gh auth status --hostname github.com`이 성공하고 활성 계정이 개인 계정 **`Yoon-Chan`**인지 확인한다.
+   - `freddie-yc` 등 다른 계정이 활성이면 `gh auth switch --hostname github.com --user Yoon-Chan`으로 전환한다.
+   - 로그인이 안 되어 있으면 사용자에게 `! gh auth login --hostname github.com` 실행(브라우저에서 Yoon-Chan 계정으로 인증)을 안내하고 중단한다. (회사 계정 `github.kakaocorp.com` 로그인과는 별개다)
+   - 주의: 이 레포 push 권한은 Yoon-Chan에게만 있다. 다른 계정 토큰이 키체인에 남아 있으면 git push도 403이 난다.
 3. **브랜치**: 현재 브랜치가 `main`이면 중단하고 feature 브랜치 생성을 제안한다.
 
 # 진행 순서
