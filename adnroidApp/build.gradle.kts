@@ -6,6 +6,8 @@ plugins {
 dependencies {
     implementation(projects.composeApp)
 
+    implementation(libs.koin.android)
+
     implementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)

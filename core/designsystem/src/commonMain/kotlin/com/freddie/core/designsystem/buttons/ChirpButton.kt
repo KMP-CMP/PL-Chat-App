@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -37,7 +38,7 @@ fun ChirpButton(
     text: String,
     modifier: Modifier = Modifier,
     style: ChirpButtonStyle = ChirpButtonStyle.PRIMARY,
-    enable: Boolean = true,
+    enabled: Boolean = true,
     isLoading: Boolean = false,
     onClick: () -> Unit,
     leadingIcon: @Composable (() -> Unit)? = null
@@ -45,16 +46,18 @@ fun ChirpButton(
     Button(
         modifier = modifier,
         onClick = onClick,
-        enabled = enable,
+        enabled = enabled,
         shape = RoundedCornerShape(8.dp),
         colors = style.colors(),
-        border = style.border(enable)
+        border = style.border(enabled)
     ) {
         // 로딩 인디케이터와 본문을 같은 Box에 겹치고 alpha만 전환해 상태가 바뀌어도 버튼 크기를 유지합니다.
         // alpha 0f는 그리기만 숨기므로 접근성 정보까지 제거해야 한다면 semantics를 별도로 처리해야 합니다.
         // https://developer.android.com/reference/kotlin/androidx/compose/ui/draw/alpha.modifier
         Box(
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .padding(6.dp)
         ) {
             CircularProgressIndicator(
                 modifier = Modifier
