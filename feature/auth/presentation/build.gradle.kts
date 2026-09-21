@@ -17,6 +17,11 @@ kotlin {
                 implementation(projects.feature.auth.domain)
                 implementation(projects.core.designsystem)
                 implementation(projects.core.presentation)
+
+                implementation(libs.bundles.koin.common)
+
+                implementation(libs.jetbrains.compose.components.resources)
+                implementation(libs.jetbrains.compose.components.ui.tooling.preview)
             }
         }
 

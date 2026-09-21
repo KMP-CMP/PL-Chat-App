@@ -43,6 +43,8 @@ kotlin {
             implementation(libs.jetbrains.compose.components.ui.tooling.preview)
             implementation(libs.jetbrains.compose.viewmodel)
             implementation(libs.jetbrains.lifecycle.compose)
+
+            implementation(libs.bundles.koin.common)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
