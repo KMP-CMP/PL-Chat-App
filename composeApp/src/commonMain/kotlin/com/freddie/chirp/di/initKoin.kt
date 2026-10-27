@@ -1,6 +1,7 @@
 package com.freddie.chirp.di
 
 import com.freddie.auth.presentation.di.authPresentationModule
+import com.freddie.core.data.di.coreDataModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
@@ -13,8 +14,11 @@ import org.koin.dsl.KoinAppDeclaration
 fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
         config?.invoke(this)
+        // module 선언만으로는 주입할 수 없으며, modules에 로드해야 정의를 찾을 수 있다.
+        // RegisterViewModel의 AuthService를 해결하려면 구현체를 등록한 coreDataModule도 필요하다.
         modules(
-            authPresentationModule
+            authPresentationModule,
+            coreDataModule
         )
     }
 }

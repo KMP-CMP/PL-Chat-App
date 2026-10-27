@@ -1,5 +1,6 @@
 package com.freddie.auth.presentation.register
 
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import chirp.feature.auth.presentation.generated.resources.Res
@@ -18,11 +19,16 @@ import com.freddie.core.presentation.util.toUiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.toString
 
 class RegisterViewModel(
     private val authService: AuthService
@@ -45,6 +51,7 @@ class RegisterViewModel(
         .onStart {
             if (!hasLoadedInitialData) {
                 /** Load initial data here **/
+                observeValidationStates()
                 hasLoadedInitialData = true
             }
         }
@@ -56,6 +63,41 @@ class RegisterViewModel(
             initialValue = RegisterState()
         )
 
+    // snapshotFlow는 수집 중 읽은 Compose Snapshot 상태(TextFieldState.text)의 변화를 Flow로 전달한다.
+    // state.value 자체는 Snapshot 상태가 아니므로 StateFlow 값의 교체를 관찰하는 용도로는 사용할 수 없다.
+    // https://developer.android.com/develop/ui/compose/side-effects#snapshotFlow
+    private val isEmailValidFlow = snapshotFlow { state.value.emailTextState.text.toString() }
+        .map { email -> EmailValidator.validate(email) }
+        // 문자열이 달라져도 검증 결과(Boolean)가 같으면 이후 처리를 반복하지 않는다.
+        .distinctUntilChanged()
+
+    private val isUsernameValidFlow = snapshotFlow { state.value.usernameTextState.text.toString() }
+        .map { username -> username.length in 3..20 }
+        .distinctUntilChanged()
+
+    private val isPasswordValidFlow = snapshotFlow { state.value.passwordTextState.text.toString() }
+        .map { password -> PasswordValidator.validate(password).isValidPassword }
+        .distinctUntilChanged()
+
+    /**
+     * combine은 모든 입력 Flow가 한 번씩 값을 낸 뒤, 어느 하나가 바뀌면 각 최신 값으로 다시 계산한다.
+     * isRegistering은 입력 Flow가 아니므로 해당 값만 바뀔 때는 이 계산이 다시 실행되지 않는다.
+     */
+    private fun observeValidationStates() {
+        combine(
+            isEmailValidFlow,
+            isUsernameValidFlow,
+            isPasswordValidFlow,
+        ) { isEmailValid, isUsernameValid, isPasswordValid ->
+            val allValid = isEmailValid && isUsernameValid && isPasswordValid
+            _state.update {
+                it.copy(
+                    canRegister = !it.isRegistering && allValid
+                )
+            }
+        // 별도 수집 코루틴은 ViewModel이 정리될 때 취소되며, state의 UI 구독이 멈춰도 계속 실행된다.
+        }.launchIn(viewModelScope)
+    }
     fun onAction(action: RegisterAction) {
         when (action) {
             RegisterAction.OnLoginClick -> validateFormInputs()

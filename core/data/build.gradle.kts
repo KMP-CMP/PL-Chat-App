@@ -18,10 +18,17 @@ kotlin {
                 implementation(projects.core.domain)
                 implementation(libs.bundles.ktor.common)
                 implementation(libs.touchlab.kermit)
+                implementation(libs.koin.core)
             }
         }
 
         androidMain {
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
+            }
+        }
+
+        jvmMain {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
             }
