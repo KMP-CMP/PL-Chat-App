@@ -3,20 +3,36 @@ package com.freddie.auth.presentation.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import chirp.feature.auth.presentation.generated.resources.Res
+import chirp.feature.auth.presentation.generated.resources.error_account_exists
 import chirp.feature.auth.presentation.generated.resources.error_invalid_email
 import chirp.feature.auth.presentation.generated.resources.error_invalid_password
 import chirp.feature.auth.presentation.generated.resources.error_invalid_username
 import com.freddie.auth.domain.EmailValidator
+import com.freddie.core.domain.auth.AuthService
+import com.freddie.core.domain.util.DataError
+import com.freddie.core.domain.util.onFailure
+import com.freddie.core.domain.util.onSuccess
 import com.freddie.core.domain.validation.PasswordValidator
 import com.freddie.core.presentation.util.UiText
+import com.freddie.core.presentation.util.toUiText
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(
+    private val authService: AuthService
+) : ViewModel() {
 
+    // 기본 Channel은 버퍼가 없어 send가 수신자를 기다리며, receiveAsFlow는 이벤트마다 한 수집자에게 전달한다.
+    // 수신 직후 수집이 취소되면 유실될 수 있으므로 화면 전환의 전달 완료까지 보장하는 구조는 아니다.
+    // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/receive-as-flow.html
+    private val eventChannel = Channel<RegisterEvent>()
+    val events = eventChannel.receiveAsFlow()
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(RegisterState())
@@ -43,8 +59,61 @@ class RegisterViewModel : ViewModel() {
     fun onAction(action: RegisterAction) {
         when (action) {
             RegisterAction.OnLoginClick -> validateFormInputs()
-            RegisterAction.OnInputTextFocusGain -> clearAllTextFieldErrors()
+            RegisterAction.OnRegisterClick -> register()
+            RegisterAction.OnTogglePasswordVisibilityClick -> {
+                _state.update {
+                    it.copy(
+                        isPasswordVisible = !it.isPasswordVisible
+                    )
+                }
+            }
+
             else -> Unit
+        }
+    }
+
+    private fun register() {
+        if (!validateFormInputs()) return
+
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isRegistering = true,
+                )
+            }
+
+            val email = state.value.emailTextState.text.toString()
+            val username = state.value.usernameTextState.text.toString()
+            val password = state.value.passwordTextState.text.toString()
+
+            authService.register(
+                email = email,
+                username = username,
+                password = password
+            )
+                .onSuccess {
+
+                    _state.update {
+                        it.copy(
+                            isRegistering = false,
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    // 같은 CONFLICT라도 회원가입에서는 '이미 존재하는 계정'으로 해석한다.
+                    // 화면 맥락이 필요한 오류만 여기서 구체화하고, 나머지는 공통 매핑을 재사용한다.
+                    val registrationError = when (error) {
+                        DataError.Remote.CONFLICT -> UiText.Resource(Res.string.error_account_exists)
+                        else -> error.toUiText()
+                    }
+
+                    _state.update {
+                        it.copy(
+                            isRegistering = false,
+                            registrationError = registrationError,
+                        )
+                    }
+                }
         }
     }
 
@@ -64,7 +133,7 @@ class RegisterViewModel : ViewModel() {
 
     private fun validateFormInputs(): Boolean {
         clearAllTextFieldErrors()
-        
+
         val currentState = state.value
         // TextFieldState가 입력을 직접 보유하므로 제출 시 text를 String으로 읽어 검증한다.
         // 별도의 onValueChange 콜백으로 검증용 문자열 상태를 동기화할 필요가 없다.

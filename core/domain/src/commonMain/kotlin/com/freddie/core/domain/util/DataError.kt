@@ -8,7 +8,7 @@ sealed interface DataError : Error {
         FORBIDDEN,
         NOT_FOUND,
         CONFLICT,
-        TOO_MANY_REQUEST,
+        TOO_MANY_REQUESTS,
         NO_INTERNET,
         PAYLOAD_TOO_LARGE,
         SERVER_ERROR,
