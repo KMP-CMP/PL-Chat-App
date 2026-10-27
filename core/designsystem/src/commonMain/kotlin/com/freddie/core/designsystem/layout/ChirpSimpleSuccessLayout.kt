@@ -30,6 +30,7 @@ fun ChirpSimpleSuccessLayout(
     // 호출부가 생략했을 때 슬롯 주변의 Spacer 같은 부수 UI까지 조건부로 함께 제거할 수 있다.
     // https://developer.android.com/develop/ui/compose/layouts/basics#slot-based-layouts
     secondaryButton: @Composable (() -> Unit)? = null,
+    secondaryError: String? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -67,6 +68,17 @@ fun ChirpSimpleSuccessLayout(
             if (secondaryButton != null) {
                 Spacer(modifier = Modifier.height(8.dp))
                 secondaryButton()
+                if(secondaryError != null) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = secondaryError,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
