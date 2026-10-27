@@ -79,20 +79,28 @@ class RegisterViewModel(
         .map { password -> PasswordValidator.validate(password).isValidPassword }
         .distinctUntilChanged()
 
+    // map 이후에는 다른 필드만 바뀌어도 같은 Boolean이 방출될 수 있어 distinctUntilChanged로 걸러낸다.
+    // canRegister 갱신이 다시 state로 들어와도 isRegistering이 같으면 combine 재계산을 막는다.
+    // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/distinct-until-changed.html
+    private val isRegisteringFlow = state
+        .map { it.isRegistering }
+        .distinctUntilChanged()
     /**
      * combine은 모든 입력 Flow가 한 번씩 값을 낸 뒤, 어느 하나가 바뀌면 각 최신 값으로 다시 계산한다.
-     * isRegistering은 입력 Flow가 아니므로 해당 값만 바뀔 때는 이 계산이 다시 실행되지 않는다.
+     * isRegistering도 입력 Flow에 포함해야 입력 문자열이 그대로여도 요청 시작·종료 시 버튼 활성 상태를 다시 계산한다.
+     * https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/combine.html
      */
     private fun observeValidationStates() {
         combine(
             isEmailValidFlow,
             isUsernameValidFlow,
             isPasswordValidFlow,
-        ) { isEmailValid, isUsernameValid, isPasswordValid ->
+            isRegisteringFlow
+        ) { isEmailValid, isUsernameValid, isPasswordValid, isRegistering ->
             val allValid = isEmailValid && isUsernameValid && isPasswordValid
             _state.update {
                 it.copy(
-                    canRegister = !it.isRegistering && allValid
+                    canRegister = !isRegistering && allValid
                 )
             }
         // 별도 수집 코루틴은 ViewModel이 정리될 때 취소되며, state의 UI 구독이 멈춰도 계속 실행된다.
@@ -119,9 +127,7 @@ class RegisterViewModel(
 
         viewModelScope.launch {
             _state.update {
-                it.copy(
-                    isRegistering = true,
-                )
+                it.copy(isRegistering = true)
             }
 
             val email = state.value.emailTextState.text.toString()
@@ -134,11 +140,8 @@ class RegisterViewModel(
                 password = password
             )
                 .onSuccess {
-
                     _state.update {
-                        it.copy(
-                            isRegistering = false,
-                        )
+                        it.copy(isRegistering = false)
                     }
                 }
                 .onFailure { error ->

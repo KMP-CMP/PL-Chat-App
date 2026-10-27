@@ -105,11 +105,10 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<
         in 200..299 -> {
             try {
                 Result.Success(response.body<T>())
-            } catch (e: NoTransformationFoundException) {
+            } catch(e: NoTransformationFoundException) {
                 Result.Failure(DataError.Remote.SERIALIZATION)
             }
         }
-
         400 -> Result.Failure(DataError.Remote.BAD_REQUEST)
         401 -> Result.Failure(DataError.Remote.UNAUTHORIZED)
         403 -> Result.Failure(DataError.Remote.FORBIDDEN)
