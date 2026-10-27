@@ -143,6 +143,7 @@ class RegisterViewModel(
                     _state.update {
                         it.copy(isRegistering = false)
                     }
+                    eventChannel.send(RegisterEvent.Success(email))
                 }
                 .onFailure { error ->
                     // 같은 CONFLICT라도 회원가입에서는 '이미 존재하는 계정'으로 해석한다.

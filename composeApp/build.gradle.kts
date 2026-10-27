@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.convention.cmp.application )
@@ -43,6 +42,10 @@ kotlin {
             implementation(libs.jetbrains.compose.components.ui.tooling.preview)
             implementation(libs.jetbrains.compose.viewmodel)
             implementation(libs.jetbrains.lifecycle.compose)
+            // commonMain에서 Android·iOS·Desktop이 공유하는 Navigation API를 사용한다.
+            // feature 모듈의 implementation 의존성은 노출되지 않으므로 사용하는 모듈에도 직접 선언한다.
+            // https://kotlinlang.org/docs/multiplatform/compose-navigation.html
+            implementation(libs.jetbrains.compose.navigation)
 
             implementation(libs.bundles.koin.common)
         }
