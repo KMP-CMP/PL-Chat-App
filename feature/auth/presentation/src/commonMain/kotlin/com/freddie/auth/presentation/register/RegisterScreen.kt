@@ -30,6 +30,7 @@ import com.freddie.core.designsystem.layout.ChirpSnackbarScaffold
 import com.freddie.core.designsystem.textfield.ChirpPasswordTextField
 import com.freddie.core.designsystem.textfield.ChirpTextField
 import com.freddie.core.designsystem.theme.ChirpTheme
+import com.freddie.core.presentation.util.ObserveAsEvents
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -44,14 +45,25 @@ fun RegisterRoot(
     // 인스턴스를 생성해 Android(JVM)에선 동작하지만, 리플렉션이 없는 Kotlin/Native(iOS)에선
     // UnsupportedOperationException으로 크래시한다 — KMP에선 팩토리 주입이 필수인 이유.
     // https://insert-koin.io/docs/reference/koin-compose/compose/
-    viewModel: RegisterViewModel = koinViewModel()
+    viewModel: RegisterViewModel = koinViewModel(),
+    onRegisterSuccess: (String) -> Unit,
 ) {
+
     // collectAsStateWithLifecycle: collectAsState와 달리 Lifecycle이 STARTED 아래로 내려가면
     // 수집을 멈춘다. ViewModel의 WhileSubscribed와 짝을 이뤄 백그라운드에서 upstream까지 정지시킨다.
     // https://developer.android.com/topic/libraries/architecture/compose#collectasstatewithlifecycle
     val state by viewModel.state.collectAsStateWithLifecycle()
-
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // ObserveAsEvents는 LaunchedEffect와 repeatOnLifecycle로 STARTED 동안 이벤트를 수집한다.
+    // 화면 이동 같은 부수 효과는 상태 렌더링과 분리하고, 상위에서 받은 콜백으로 실행한다.
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is RegisterEvent.Success -> {
+                onRegisterSuccess(event.email)
+            }
+        }
+    }
 
     RegisterScreen(
         state = state,
