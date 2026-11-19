@@ -25,10 +25,11 @@ import com.freddie.core.designsystem.theme.ChirpTheme
 import com.freddie.core.presentation.util.ObserveAsEvents
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegisterSuccessRoot(
-    viewModel: RegisterSuccessViewModel = viewModel()
+    viewModel: RegisterSuccessViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     // remember로 같은 SnackbarHostState를 유지해 재구성 중에도 진행 중인 Snackbar 상태를 보존한다.

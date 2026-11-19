@@ -3,7 +3,9 @@ package com.freddie.auth.presentation.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
+import com.freddie.auth.presentation.email_varification.EmailVerificationRoot
 import com.freddie.auth.presentation.register.RegisterRoot
 import com.freddie.auth.presentation.register_success.RegisterSuccessRoot
 import com.freddie.auth.presentation.register_success.RegisterSuccessScreen
@@ -32,6 +34,20 @@ fun NavGraphBuilder.authGraph(
 
         composable<AuthGraphRoutes.RegisterSuccess> {
             RegisterSuccessRoot()
+        }
+
+        composable<AuthGraphRoutes.EmailVerification>(
+            // 두 URI 패턴의 {token}은 같은 목적지 인자에 연결된다. 인증 ViewModel은 SavedStateHandle에서 token을 읽는다.
+            deepLinks = listOf(
+                navDeepLink {
+                    this.uriPattern = "https://chirp.pl-coding.com/api/auth/verify?token={token}"
+                },
+                navDeepLink {
+                    this.uriPattern = "chirp://chirp.pl-coding.com/api/auth/verify?token={token}"
+                },
+            )
+        ) {
+            EmailVerificationRoot()
         }
     }
 }

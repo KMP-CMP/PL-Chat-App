@@ -19,6 +19,27 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Android는 설치 시 도메인의 assetlinks.json에서 앱 패키지명과 서명 인증서의 SHA-256 지문을 확인한다. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https"
+                    android:host="chirp.pl-coding.com"
+                    android:pathPrefix="/api/auth/verify" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="chirp"
+                    android:host="chirp.pl-coding.com"
+                    android:pathPrefix="/api/auth/verify" />
+            </intent-filter>
         </activity>
     </application>
 
