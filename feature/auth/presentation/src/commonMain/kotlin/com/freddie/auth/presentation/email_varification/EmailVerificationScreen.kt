@@ -36,10 +36,11 @@ import com.freddie.core.designsystem.layout.ChirpSimpleResultLayout
 import com.freddie.core.designsystem.theme.ChirpTheme
 import com.freddie.core.designsystem.theme.extended
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EmailVerificationRoot(
-    viewModel: EmailVerificationViewModel = viewModel()
+    viewModel: EmailVerificationViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
