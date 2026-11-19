@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>chirp.pl-coding.com</string>
+			<!-- chirp는 앱에 등록하는 커스텀 스킴이다. HTTPS Universal Links는 Associated Domains와 서버의 apple-app-site-association 파일이 필요하다. -->
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>https</string>
+				<string>chirp</string>
+			</array>
+		</dict>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 </dict>
