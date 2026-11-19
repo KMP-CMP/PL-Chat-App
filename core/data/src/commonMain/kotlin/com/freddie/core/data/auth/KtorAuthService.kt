@@ -2,6 +2,7 @@ package com.freddie.core.data.auth
 
 import com.freddie.core.data.dto.requests.EmailRequest
 import com.freddie.core.data.dto.requests.RegisterRequest
+import com.freddie.core.data.networking.get
 import com.freddie.core.data.networking.post
 import com.freddie.core.domain.auth.AuthService
 import com.freddie.core.domain.util.DataError
@@ -33,6 +34,13 @@ class KtorAuthService(
         return httpClient.post(
             route = "/auth/resend-verification",
             body = EmailRequest(email),
+        )
+    }
+
+    override suspend fun verifyEmail(token: String): EmptyResult<DataError.Remote> {
+        return httpClient.get(
+            route = "/auth/verify",
+            queryParams = mapOf("token" to token)
         )
     }
 }

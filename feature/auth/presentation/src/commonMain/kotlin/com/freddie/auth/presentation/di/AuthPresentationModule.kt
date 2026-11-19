@@ -1,5 +1,6 @@
 package com.freddie.auth.presentation.di
 
+import com.freddie.auth.presentation.email_varification.EmailVerificationViewModel
 import com.freddie.auth.presentation.register.RegisterViewModel
 import com.freddie.auth.presentation.register_success.RegisterSuccessViewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -11,4 +12,5 @@ val authPresentationModule = module {
     // https://insert-koin.io/docs/reference/koin-core/dsl-update
     viewModelOf(::RegisterViewModel)
     viewModelOf(::RegisterSuccessViewModel)
+    viewModelOf(::EmailVerificationViewModel)
 }
